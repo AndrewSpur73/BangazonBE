@@ -104,5 +104,27 @@ app.MapPatch("/api/users/{id}", (BangazonBEDbContext db, int id, User user) =>
 
 //Products
 
+app.MapGet("/api/products", (BangazonBEDbContext db) =>
+{
+    return db.Products.Include(p => p.ProductType).ToList();
+});
+
+app.MapGet("/api/products/{id}", (BangazonBEDbContext db, int id) =>
+{
+    Product product = db.Products.SingleOrDefault(p => p.ProductId == id);
+    if (product == null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(product);
+});
+
+app.MapPost("/api/products", (BangazonBEDbContext db, Product product) =>
+{
+    db.Products.Add(product);
+    db.SaveChanges();
+    return Results.Created($"/api/products/{product.ProductId}", product);
+});
+
 app.Run();
 
