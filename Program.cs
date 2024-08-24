@@ -242,5 +242,17 @@ app.MapPost("/api/producttypes", (BangazonBEDbContext db, ProductType producttyp
     return Results.Created($"/api/products/{producttype.Id}", producttype);
 });
 
+//LOGIN
+
+app.MapGet("/api/checkuser/{uid}", (BangazonBEDbContext db, string uid) =>
+{
+var authUser = db.Users.Where(u => u.Uid == uid).FirstOrDefault();
+if (authUser == null)
+{
+    return Results.StatusCode(204);
+}
+return Results.Ok(authUser);
+});
+
 app.Run();
 
