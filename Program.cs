@@ -126,5 +126,31 @@ app.MapPost("/api/products", (BangazonBEDbContext db, Product product) =>
     return Results.Created($"/api/products/{product.ProductId}", product);
 });
 
+//ORDERS
+
+app.MapGet("/api/orders", (BangazonBEDbContext db) =>
+{
+    // Include PaymentType to retrieve related information
+    return db.Orders.Include(o => o.PaymentType).ToList();
+});
+
+app.MapGet("/api/orders/{id}/products", (BangazonBEDbContext db, int id) =>
+{
+    var Order = db.Orders.Include(o => o.Products).FirstOrDefault(o => o.OrderId == id);
+    return Order;
+});
+
+app.MapDelete("/api/orders/{id}", (BangazonBEDbContext db, int id) =>
+{
+    Order orderToDelete = db.Orders.SingleOrDefault(p => p.OrderId == id);
+    if (orderToDelete == null)
+    {
+        return Results.NotFound();
+    }
+    db.Orders.Remove(orderToDelete);
+    db.SaveChanges();
+    return Results.Ok(db.Orders);
+});
+
 app.Run();
 
