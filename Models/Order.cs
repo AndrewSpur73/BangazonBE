@@ -6,10 +6,11 @@ public class Order
 {
     public int OrderId { get; set; }
     [Required]
-    public int UserId { get; set; }
-    public bool OrderStatus { get; set; }
-    public string? PaymentType { get; set; }
-    public decimal Total { get; set; }
-    public DateOnly OrderDate { get; set; }
-    public List<OrderItem>? OrderItems { get; set; }
+    public string Uid { get; set; }
+    [Required]
+    public bool OrderComplete { get; set; }
+    public int? PaymentTypeId { get; set; }
+    public PaymentType PaymentType { get; set; }
+
+    public List<Product>? Products { get; set; }
 }

@@ -12,11 +12,9 @@ public class User
     [Required] 
     public string LastName { get; set; }
     [Required]
+    public string? Address { get; set; }
     public string? UserName { get; set; }
-    public string? Password { get; set; }
     public string? Email { get; set; }
     public bool? Seller { get; set; }
-    public string? StoreName { get; set; }
-    public string? Description { get; set; }
     public List<Order>? Orders { get; set; }
 }
