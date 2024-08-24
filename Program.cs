@@ -33,7 +33,76 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+//Users
+app.MapGet("/api/users", (BangazonBEDbContext db) =>
+{
+    return db.Users.ToList();
+});
 
+app.MapPost("/api/users", (BangazonBEDbContext db, User userInfo) =>
+{
+    db.Users.Add(userInfo);
+    db.SaveChanges();
+    return Results.Created($"/api/users/{userInfo.Id}", userInfo);
+});
+
+app.MapGet("/api/users/{id}", (BangazonBEDbContext db, int id) =>
+{
+    User user = db.Users.SingleOrDefault(u => u.Id == id);
+    if (user == null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(user);
+});
+
+app.MapGet("/api/users/details/{uid}", (BangazonBEDbContext db, string uid) =>
+{
+
+    User user = db.Users.SingleOrDefault(u => u.Uid == uid);
+
+    if (user == null)
+    {
+        return Results.NotFound();
+    }
+
+    return Results.Ok(user);
+});
+
+app.MapPatch("/api/users/sell/{uid}", async (BangazonBEDbContext db, string uid) =>
+{
+    User user = db.Users.SingleOrDefault(u => u.Uid == uid);
+
+    if (user == null)
+    {
+        return Results.NotFound();
+    }
+
+    user.Seller = true;
+    await db.SaveChangesAsync();
+
+    return Results.Ok(user);
+});
+
+app.MapPatch("/api/users/{id}", (BangazonBEDbContext db, int id, User user) =>
+{
+    User userToUpdate = db.Users.SingleOrDefault(u => u.Id == id);
+    if (userToUpdate == null)
+    {
+        return Results.NotFound();
+    }
+    userToUpdate.Uid = user.Uid;
+    userToUpdate.FirstName = user.FirstName;
+    userToUpdate.LastName = user.LastName;
+    userToUpdate.UserName = user.UserName;
+    userToUpdate.Address = user.Address;
+    userToUpdate.Email = user.Email;
+    userToUpdate.Seller = user.Seller;
+    db.SaveChanges();
+    return Results.Ok(userToUpdate);
+});
+
+//Products
 
 app.Run();
 
