@@ -26,9 +26,9 @@ public class BangazonBEDbContext : DbContext
 
         modelBuilder.Entity<Order>().HasData(new Order[]
         {
-    new Order { OrderId = 1, Uid = "UddDl9yg9Nhq28kdu0SQyjjstkr2", OrderComplete = true, PaymentTypeId = 1 },
-    new Order { OrderId = 2, Uid = "UddDl9yg9Nhq28kdu0SQyjjstkr2", OrderComplete = false, PaymentTypeId = 2 },
-    new Order { OrderId = 3, Uid = "UddDl9yg9Nhq28kdu0SQyjjstkr2", OrderComplete = true, PaymentTypeId = 2 }
+    new Order { OrderId = 1, Uid = "WWK60quQ2LWs8vr06yi1yKRzEem2", OrderComplete = true, PaymentTypeId = 1 },
+    new Order { OrderId = 2, Uid = "WWK60quQ2LWs8vr06yi1yKRzEem2", OrderComplete = false, PaymentTypeId = 2 },
+    new Order { OrderId = 3, Uid = "WWK60quQ2LWs8vr06yi1yKRzEem2", OrderComplete = true, PaymentTypeId = 2 }
         });
 
         modelBuilder.Entity<PaymentType>().HasData(new PaymentType[]
