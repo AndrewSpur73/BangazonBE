@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BangazonBE.Migrations
 {
     [DbContext(typeof(BangazonBEDbContext))]
-    [Migration("20240824151432_InitialCreate")]
+    [Migration("20240831152607_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,21 +58,21 @@ namespace BangazonBE.Migrations
                             OrderId = 1,
                             OrderComplete = true,
                             PaymentTypeId = 1,
-                            Uid = "UddDl9yg9Nhq28kdu0SQyjjstkr2"
+                            Uid = "WWK60quQ2LWs8vr06yi1yKRzEem2"
                         },
                         new
                         {
                             OrderId = 2,
                             OrderComplete = false,
                             PaymentTypeId = 2,
-                            Uid = "UddDl9yg9Nhq28kdu0SQyjjstkr2"
+                            Uid = "WWK60quQ2LWs8vr06yi1yKRzEem2"
                         },
                         new
                         {
                             OrderId = 3,
                             OrderComplete = true,
                             PaymentTypeId = 2,
-                            Uid = "UddDl9yg9Nhq28kdu0SQyjjstkr2"
+                            Uid = "WWK60quQ2LWs8vr06yi1yKRzEem2"
                         });
                 });
 

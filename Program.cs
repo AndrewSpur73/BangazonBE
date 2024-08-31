@@ -47,12 +47,28 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+//LOGIN
+app.MapGet("/api/checkuser/{uid}", (BangazonBEDbContext db, string uid) =>
+{
+    var authUser = db.Users.Where(u => u.Uid == uid).FirstOrDefault();
+    if (authUser == null)
+    {
+        return Results.StatusCode(204);
+    }
+    return Results.Ok(authUser);
+});
+
+app.Run();
+
+
 //Users
 app.MapGet("/api/users", (BangazonBEDbContext db) =>
 {
     return db.Users.ToList();
 });
 
+
+//Register User
 app.MapPost("/api/users", (BangazonBEDbContext db, User userInfo) =>
 {
     db.Users.Add(userInfo);
@@ -60,6 +76,7 @@ app.MapPost("/api/users", (BangazonBEDbContext db, User userInfo) =>
     return Results.Created($"/api/users/{userInfo.Id}", userInfo);
 });
 
+//Check User
 app.MapGet("/api/users/{id}", (BangazonBEDbContext db, int id) =>
 {
     User user = db.Users.SingleOrDefault(u => u.Id == id);
@@ -70,6 +87,7 @@ app.MapGet("/api/users/{id}", (BangazonBEDbContext db, int id) =>
     return Results.Ok(user);
 });
 
+//Get User Details
 app.MapGet("/api/users/details/{uid}", (BangazonBEDbContext db, string uid) =>
 {
 
@@ -83,6 +101,7 @@ app.MapGet("/api/users/details/{uid}", (BangazonBEDbContext db, string uid) =>
     return Results.Ok(user);
 });
 
+//Switch User to Seller
 app.MapPatch("/api/users/sell/{uid}", async (BangazonBEDbContext db, string uid) =>
 {
     User user = db.Users.SingleOrDefault(u => u.Uid == uid);
@@ -98,6 +117,8 @@ app.MapPatch("/api/users/sell/{uid}", async (BangazonBEDbContext db, string uid)
     return Results.Ok(user);
 });
 
+
+//Update User
 app.MapPatch("/api/users/{id}", (BangazonBEDbContext db, int id, User user) =>
 {
     User userToUpdate = db.Users.SingleOrDefault(u => u.Id == id);
@@ -117,12 +138,14 @@ app.MapPatch("/api/users/{id}", (BangazonBEDbContext db, int id, User user) =>
 });
 
 //Products
-
+//Get All Products
 app.MapGet("/api/products", (BangazonBEDbContext db) =>
 {
     return db.Products.Include(p => p.ProductType).ToList();
 });
 
+
+//Get Single Product
 app.MapGet("/api/products/{id}", (BangazonBEDbContext db, int id) =>
 {
     Product product = db.Products.SingleOrDefault(p => p.ProductId == id);
@@ -133,6 +156,7 @@ app.MapGet("/api/products/{id}", (BangazonBEDbContext db, int id) =>
     return Results.Ok(product);
 });
 
+//Create Products
 app.MapPost("/api/products", (BangazonBEDbContext db, Product product) =>
 {
     db.Products.Add(product);
@@ -141,22 +165,24 @@ app.MapPost("/api/products", (BangazonBEDbContext db, Product product) =>
 });
 
 //ORDERS
-
+//Get All Orders
 app.MapGet("/api/orders", (BangazonBEDbContext db) =>
 {
     // Include PaymentType to retrieve related information
     return db.Orders.Include(o => o.PaymentType).ToList();
 });
 
-app.MapGet("/api/orders/{id}/products", (BangazonBEDbContext db, int id) =>
+//Get Order Products
+app.MapGet("/api/orders/{orderId}/products", (BangazonBEDbContext db, int orderId) =>
 {
-    var Order = db.Orders.Include(o => o.Products).FirstOrDefault(o => o.OrderId == id);
+    var Order = db.Orders.Include(o => o.Products).FirstOrDefault(o => o.OrderId == orderId);
     return Order;
 });
 
-app.MapDelete("/api/orders/{id}", (BangazonBEDbContext db, int id) =>
+//Delete Order
+app.MapDelete("/api/orders/{orderId}", (BangazonBEDbContext db, int orderId) =>
 {
-    Order orderToDelete = db.Orders.SingleOrDefault(p => p.OrderId == id);
+    Order orderToDelete = db.Orders.SingleOrDefault(p => p.OrderId == orderId);
     if (orderToDelete == null)
     {
         return Results.NotFound();
@@ -167,7 +193,7 @@ app.MapDelete("/api/orders/{id}", (BangazonBEDbContext db, int id) =>
 });
 
 //ORDERPRODUCT
-
+//Add Product to Order
 app.MapPost("api/orders/addProduct", (BangazonBEDbContext db, addProductDTO newProduct) =>
 {
     var order = db.Orders.Include(o => o.Products).FirstOrDefault(o => o.OrderId == newProduct.OrderId);
@@ -201,19 +227,45 @@ app.MapPost("api/orders/addProduct", (BangazonBEDbContext db, addProductDTO newP
     return Results.Created($"/orders/addProduct", newProduct);
 });
 
-app.MapGet("/api/products/{id}/orders", (BangazonBEDbContext db, int id) =>
+//Get Product Orders By Id
+app.MapGet("/api/products/{orderId}/orders", (BangazonBEDbContext db, int id) =>
 {
     var product = db.Products.Include(p => p.Orders).FirstOrDefault(p => p.ProductId == id);
     return product;
 });
 
-//PRODUCT TYPES
+//Remove Product From Order
+app.MapDelete("/api/orders/{orderId}/products/{productId}", (BangazonBEDbContext db, int orderId, int productId) =>
+{
+    var order = db.Orders.Include(o => o.Products).FirstOrDefault(o => o.OrderId == orderId);
 
+    if (order == null)
+    {
+        return Results.NotFound("Order not found.");
+    }
+
+    var productToRemove = order.Products.FirstOrDefault(p => p.ProductId == productId);
+
+    if (productToRemove == null)
+    {
+        return Results.NotFound("Product not found in cart.");
+    }
+
+    order.Products.Remove(productToRemove);
+
+    db.SaveChanges();
+
+    return Results.Ok("Product removed from the cart.");
+});
+
+//PRODUCT TYPES
+//Get All Product Types
 app.MapGet("/api/producttypes", (BangazonBEDbContext db) =>
 {
     return db.ProductTypes.ToList();
 });
 
+//Get Product Type by Id
 app.MapGet("/api/producttypes/{id}", (BangazonBEDbContext db, int id) =>
 {
     ProductType producttype = db.ProductTypes.SingleOrDefault(pt => pt.Id == id);
@@ -224,48 +276,4 @@ app.MapGet("/api/producttypes/{id}", (BangazonBEDbContext db, int id) =>
     return Results.Ok(producttype);
 });
 
-app.MapDelete("/api/producttypes/{id}", (BangazonBEDbContext db, int id) =>
-{
-    ProductType producttypeToDelete = db.ProductTypes.SingleOrDefault(pt => pt.Id == id);
-    if (producttypeToDelete == null)
-    {
-        return Results.NotFound();
-    }
-    db.ProductTypes.Remove(producttypeToDelete);
-    db.SaveChanges();
-    return Results.Ok(db.ProductTypes);
-});
-
-app.MapPut("/api/producttypes/{id}", (BangazonBEDbContext db, int id, ProductType prodtype) =>
-{
-    ProductType producttypeToUpdate = db.ProductTypes.SingleOrDefault(pt => pt.Id == id);
-    if (producttypeToUpdate == null)
-    {
-        return Results.NotFound();
-    }
-    producttypeToUpdate.Type = prodtype.Type;
-    db.SaveChanges();
-    return Results.Ok(producttypeToUpdate);
-});
-
-app.MapPost("/api/producttypes", (BangazonBEDbContext db, ProductType producttype) =>
-{
-    db.ProductTypes.Add(producttype);
-    db.SaveChanges();
-    return Results.Created($"/api/products/{producttype.Id}", producttype);
-});
-
-//LOGIN
-
-app.MapGet("/api/checkuser/{uid}", (BangazonBEDbContext db, string uid) =>
-{
-var authUser = db.Users.Where(u => u.Uid == uid).FirstOrDefault();
-if (authUser == null)
-{
-    return Results.StatusCode(204);
-}
-return Results.Ok(authUser);
-});
-
-app.Run();
 

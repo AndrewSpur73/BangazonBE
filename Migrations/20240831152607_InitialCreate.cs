@@ -162,9 +162,9 @@ namespace BangazonBE.Migrations
                 columns: new[] { "OrderId", "OrderComplete", "PaymentTypeId", "Uid", "UserId" },
                 values: new object[,]
                 {
-                    { 1, true, 1, "UddDl9yg9Nhq28kdu0SQyjjstkr2", null },
-                    { 2, false, 2, "UddDl9yg9Nhq28kdu0SQyjjstkr2", null },
-                    { 3, true, 2, "UddDl9yg9Nhq28kdu0SQyjjstkr2", null }
+                    { 1, true, 1, "WWK60quQ2LWs8vr06yi1yKRzEem2", null },
+                    { 2, false, 2, "WWK60quQ2LWs8vr06yi1yKRzEem2", null },
+                    { 3, true, 2, "WWK60quQ2LWs8vr06yi1yKRzEem2", null }
                 });
 
             migrationBuilder.InsertData(
