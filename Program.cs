@@ -58,9 +58,6 @@ app.MapGet("/api/checkuser/{uid}", (BangazonBEDbContext db, string uid) =>
     return Results.Ok(authUser);
 });
 
-app.Run();
-
-
 //Users
 app.MapGet("/api/users", (BangazonBEDbContext db) =>
 {
@@ -154,6 +151,12 @@ app.MapGet("/api/products/{id}", (BangazonBEDbContext db, int id) =>
         return Results.NotFound();
     }
     return Results.Ok(product);
+});
+
+//Get Product by Seller Id
+app.MapGet("/api/products/seller/{sellerId}", (BangazonBEDbContext db, int sellerId) =>
+{
+    return db.Products.Where(p => p.SellerId == sellerId);
 });
 
 //Create Products
@@ -276,4 +279,4 @@ app.MapGet("/api/producttypes/{id}", (BangazonBEDbContext db, int id) =>
     return Results.Ok(producttype);
 });
 
-
+app.Run();
