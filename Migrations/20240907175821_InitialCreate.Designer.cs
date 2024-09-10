@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BangazonBE.Migrations
 {
     [DbContext(typeof(BangazonBEDbContext))]
-    [Migration("20240831152607_InitialCreate")]
+    [Migration("20240907175821_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
